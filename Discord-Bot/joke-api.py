@@ -1,4 +1,5 @@
 import requests
+# Find the discord bot file attached to it!
 
 URL = 'https://official-joke-api.appspot.com/random_joke'
 
