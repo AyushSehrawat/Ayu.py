@@ -1,6 +1,4 @@
 # Python-3-Files-
-Here i will upload my python-3 codes! Community can suggest the ideas too! 
-
+Here i will upload my Python-3 files! 
 ----------------------
-
-My codes are not copyright and can be used freely by the community. 
+ *You are free to use my codes (afterall anyone can make them)...Hope you love it!
