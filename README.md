@@ -1,4 +1,4 @@
-- ```Python``` 3 Files
+# Python 3 Files
 -------------------------
 ## Includes some codes made by me :)
 Being a beginner in python (currently) , publising some of the good codes of mine
