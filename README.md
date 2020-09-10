@@ -7,4 +7,4 @@ Being a beginner in python (currently) , publising some of the good codes of min
 Free to use
 
 ## Contributing
-Discuss before making ant changes!
+Discuss before making any changes!
