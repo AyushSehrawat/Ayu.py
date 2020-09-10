@@ -1,20 +1,23 @@
-import time  # Imports a module to add a pause
+import time  
 
-# Figuring out how users might respond
+
 answer_A = ["A", "a"]
 answer_B = ["B", "b"]
 answer_C = ["C", "c"]
 yes = ["Y", "y", "yes"]
 no = ["N", "n", "no"]
 
-# Grabbing objects
+
+
 sword = 0
 flower = 0
 
-required = ("\nUse only A, B, or C\n")  # Cutting down on duplication
+required = ("\nUse only A, B, or C\n")  
 
 
-# The story is broken into sections, starting with "intro"
+
+
+
 def intro():
     print("After a drunken night out with friends, you awaken the "
           "next morning in a thick, dank forest.\nHead spinning and "
@@ -22,11 +25,13 @@ def intro():
           "unfamiliar setting.\nThe peace quickly fades when you hear a "
           "grotesque sound emitting behind you.\nA slobbering orc is "
           "running towards you.\nYou will:")
+    
     time.sleep(1)
     print("""  A. Grab a nearby rock and throw it at the orc
   B. Lie down and wait to be mauled
   C. Run""")
-    choice = input(">>> ")  # Here is your first choice.
+    choice = input(">>> ")  
+    
     if choice in answer_A:
         option_rock()
     elif choice in answer_B:
@@ -66,7 +71,7 @@ def option_cave():
           "the ground.\nDo you pick up a sword. Y/N?")
     choice = input(">>> ")
     if choice in yes:
-        sword = 1  # adds a sword
+        sword = 1  
     else:
         sword = 0
     print("\nWhat do you do next?")
@@ -129,7 +134,7 @@ def option_town():
           "near your foot.\nDo you pick it up? Y/N")
     choice = input(">>> ")
     if choice in yes:
-        flower = 1  # adds a flower
+        flower = 1  
     else:
         flower = 0
     print("You hear its heavy footsteps and ready yourself for "
@@ -140,7 +145,7 @@ def option_town():
               "hoping it will stop the orc.\nIt does! The orc was looking "
               "for love. "
               "\n\nThis got weird, but you survived!")
-    else:  # If the user didn't grab the sword
+    else:  
         print("\nMaybe you should have picked up the flower. "
               "\n\nYou died!")
 
