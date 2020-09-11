@@ -3,9 +3,10 @@ as passwords, account authentication, security tokens, and related secrets. """
 import string
 import secrets
 import time
+from pathlib import Path
+
 
 secure_pass_list = []
-# An empty list to store passwords
 
 
 def secure_password_gen(passlength):
@@ -29,12 +30,9 @@ save = input('Do you want to save it?\n(Y)es or (N)o\n>>> ').upper()
 
 if save == 'Y':
     with open("secure-passwords.txt", "a+") as file:
-        file.seek(0)
-        data = file.read(100)
-        if len(data) > 0:
-            file.write("\n")
+        data = Path('secure-passwords.txt').stat().st_size
+        file.write('\nPassword-Generated: ') if data else file.write('Password-Generated: ')
         file.write('\nPassword-Generated: '.join(secure_pass_list))
         print('Check the same directory where this script is saved! ')
-
 else:
     print('Thanks for using!')
