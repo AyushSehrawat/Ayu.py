@@ -48,8 +48,8 @@ while True:
 
     if choice == '1':
 
-        int_1 = int(input('Please Tell Your First Number: '))
-        int_2 = int(input('Please Tell Your Second Number: '))
+        int_1 = float(input('Please Tell Your First Number: '))
+        int_2 = float(input('Please Tell Your Second Number: '))
 
         print('-'*40)
         time.sleep(0.5)
@@ -80,7 +80,7 @@ while True:
     elif choice == '2':
         print('-'*40)
 
-        int_3 = int(input('Input your number here: '))
+        int_3 = float(input('Input your number here: '))
         time.sleep(1)
 
         print('-'*40)
