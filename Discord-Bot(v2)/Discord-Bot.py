@@ -8,21 +8,25 @@ from itertools import cycle
 
 import joke_api
 
+import psutil
+
 import random
 
 import datetime
 
 client = commands.Bot(command_prefix='!')
 client.remove_command("help")
-status = cycle(['Try !help', 'Try !server', 'Try !password', 'Try !ping', 'Try !server', 'Try !help', 'Try !pingme',
-                'Try !help', 'Try !joke', 'Try !memcount', 'Try !help', 'Try !invite', 'Try !pingme', 'Try !server'])
+status = cycle(['Try !help', 'Try !server', 'Try !password', 'Try !bot', 'Try !server', 'Try !help', 'Try !pingme',
+                'Try !help', 'Try !joke', 'Try !bot', 'Try !help', 'Try !invite', 'Try !pingme', 'Try !server'])
+
+unicode_list = ["\U0001f600", "\U0001f970", "\U0001f609", "\U0001f60a"]
 
 
 @client.event
 async def on_ready():
     change_status.start()
     print('Bot is ready')
-    channel = client.get_channel(id=Any of your channel id here)
+    channel = client.get_channel(id=cahnnel id)
     await channel.send(f'Hi! I am `online!`')
 
 
@@ -30,7 +34,7 @@ async def on_ready():
 async def on_member_join(member):
     role = discord.utils.get(member.guild.roles, name='Developers')
     await member.add_roles(role)
-    welcome = client.get_channel(id=Any of your channel id here)
+    welcome = client.get_channel(id=channel id)
     embedvf = discord.Embed(title=f"Welcome to the Server", description=None, color=0xFF0000)
     embedvf.set_thumbnail(url=member.avatar_url)
     embedvf.add_field(name=f'{member.name}', value=f'{member.name} Joined the server!', inline=False)
@@ -45,15 +49,18 @@ async def change_status():
 @client.command(aliases=['help'])
 async def _help(ctx):
     embedvar = discord.Embed(title="All the bot commands", description=None, color=0x00ff00)
-    embedvar.add_field(name="!ping", value="Tells the bot latency", inline=False)
+    embedvar.add_field(name="!bot", value="Tells Info About Bot", inline=False)
     embedvar.add_field(name="!pingme", value="Pings you back", inline=False)
     embedvar.add_field(name="!hello", value="Returns Hello", inline=False)
     embedvar.add_field(name="!password", value="Generates a unique password", inline=False)
-    embedvar.add_field(name="!8ball", value="Tell the chances of happening (write the question with it )", inline=False)
+    embedvar.add_field(name="!8ball <question>", value="Tell the chances of happening (write the question with it )",
+                       inline=False)
     embedvar.add_field(name="!joke", value="Returns a joke", inline=False)
     embedvar.add_field(name="!memcount", value="Returns the total members in the server", inline=False)
     embedvar.add_field(name="!invite", value="Creates a invite", inline=False)
     embedvar.add_field(name="!server", value="Returns information about the server", inline=False)
+    embedvar.add_field(name='!user <mention>', value="Tells info about a user mentioned with it", inline=False)
+    embedvar.add_field(name='!spam <message> <value>', value='Spams the message given', inline=False)
     await ctx.send(embed=embedvar)
 
 
@@ -62,9 +69,11 @@ async def pingme(ctx):
     await ctx.send(f'{ctx.author.mention}')
 
 
-@client.command()
+@client.command(aliases=['hi'])
 async def hello(ctx):
-    await ctx.send(f'Hello {ctx.author.mention}')
+    msg = await ctx.send(f'Hello {ctx.author.mention}')
+    msg
+    await msg.add_reaction(f'{random.choice(unicode_list)}')
 
 
 @client.command()
@@ -74,9 +83,28 @@ async def password(ctx):
     await ctx.author.send(f'You password is \n `{passwor}`')
 
 
-@client.command()
-async def ping(ctx):
-    await ctx.send(f'{ctx.author.mention} Pong {round(client.latency * 1000)}ms')
+@client.command(aliases=['python', 'botinfo'])
+async def bot(ctx):
+    values = psutil.virtual_memory()
+    val2 = values.available * 0.001
+    val3 = val2 * 0.001
+    val4 = val3 * 0.001
+    values2 = psutil.virtual_memory()
+    value21 = values2.total
+    values22 = value21 * 0.001
+    values23 = values22 * 0.001
+    values24 = values23 * 0.001
+    embedve = discord.Embed(title="Bot Info", description=None, color=0x9370DB)
+    embedve.add_field(name="Bot Latency", value=f"Bot latency - {round(client.latency * 1000)}ms", inline=False)
+    embedve.add_field(name='Bot Stats', value=f'Cpu usage- {psutil.cpu_percent(1)}%'
+                                              f'\n(Actual Cpu Usage May Differ)'
+                                              f'\n'
+                                              f'\nNumber OF Cores - {psutil.cpu_count()} '
+                                              f'\nNumber of Physical Cores- {psutil.cpu_count(logical=False)}'
+                                              f'\n'
+                                              f'\nAvailable ram- {round(values24, 2)} GB'
+                                              f'\nAvailable Ram - {round(val4, 2)} GB')
+    await ctx.send(embed=embedve)
 
 
 @client.command(aliases=['8ball'])
@@ -158,18 +186,19 @@ async def invite(ctx):
     await ctx.send(inv)
 
 
-@client.command()
+@client.command(aliases=['info'])
 async def server(ctx):
     roles = [role.name for role in ctx.guild.roles]
     roles.remove('@everyone')
     roles.remove('Python')  # My bot name is python
     embedva = discord.Embed(title="Info About The Server", description=None, color=0x00FFFF)
+    embedva.set_thumbnail(url=ctx.guild.icon_url)
     embedva.add_field(name="Server Name", value=f"{ctx.guild}", inline=False)
     embedva.add_field(name="Region", value=f"{ctx.guild.region}", inline=False)
     embedva.add_field(name="Created", value=f"{ctx.guild.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
                       inline=False)
     embedva.add_field(name="Owner", value=f"{ctx.guild.owner}", inline=False)
-    embedva.add_field(name="Channels", value=f"There are {len(ctx.guild.channels)} channels", inline=False)
+    embedva.add_field(name="Channels", value=f"There are {len(ctx.guild.channels[1:])} channels", inline=False)
     embedva.add_field(name="Text Channels", value=f"There are {len(ctx.guild.text_channels)} text-channels",
                       inline=False)
     embedva.add_field(name="Voice Channels", value=f"There are {len(ctx.guild.voice_channels)} voice-channels",
@@ -189,10 +218,27 @@ async def _user(ctx, member: discord.Member):
     embedv.add_field(name="Joined: ", value=f"{member.joined_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}", inline=False)
     embedv.add_field(name="Created: ", value=f"{member.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
                      inline=False)
-    embedv.add_field(name="Total Roles", value=f"{len(member.roles)}", inline=False)
+    embedv.add_field(name="Total Roles", value=f"{len(member.roles) - 1}", inline=False)
     embedv.add_field(name="Roles", value=f"{' | '.join(roles)}", inline=False)
     embedv.add_field(name='ID', value=f"{member.id}", inline=False)
     await ctx.send(embed=embedv)
 
 
-client.run('Your token')
+@client.command()
+async def spam(ctx, message='spam', *, val=5):
+    channel_only = client.get_channel(channelid of urs)
+    val = int(val)
+    if ctx.channel == channel_only and val < 20:
+        for i in range(val):
+            await ctx.send(f'{message}')
+        await ctx.send(f'{ctx.author.mention} Spamming done')
+    elif val > 20 and ctx.channel == channel_only:
+        await ctx.send('You Cannot Spam More Than 20 Times')
+    else:
+        await ctx.send(f'{ctx.author.mention} You cannot use this command here!')
+        chan = client.get_channel(same channelid as above)
+        await chan.send(f'{ctx.author.mention} Spam here')
+
+
+
+client.run('Your Token')
