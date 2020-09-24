@@ -10,36 +10,51 @@ import joke_api
 
 import random
 
+import datetime
+
 client = commands.Bot(command_prefix='!')
 client.remove_command("help")
-status = cycle(['Try !commandinfo', 'Try !password', 'Try !ping', 'Try commandinfo', 'Try !pingme',
-                'Try !commandinfo', 'Try !joke', 'Try !memcount', 'Try !commandinfo', 'Try !invite', 'Try !pingme'])
+status = cycle(['Try !help', 'Try !server', 'Try !password', 'Try !ping', 'Try !server', 'Try !help', 'Try !pingme',
+                'Try !help', 'Try !joke', 'Try !memcount', 'Try !help', 'Try !invite', 'Try !pingme', 'Try !server'])
 
 
 @client.event
 async def on_ready():
     change_status.start()
     print('Bot is ready')
-    channel = client.get_channel(id= #your channel id)
+    channel = client.get_channel(id=Any of your channel id here)
     await channel.send(f'Hi! I am `online!`')
 
 
-@tasks.loop(seconds=10)
+@client.event
+async def on_member_join(member):
+    role = discord.utils.get(member.guild.roles, name='Developers')
+    await member.add_roles(role)
+    welcome = client.get_channel(id=Any of your channel id here)
+    embedvf = discord.Embed(title=f"Welcome to the Server", description=None, color=0xFF0000)
+    embedvf.set_thumbnail(url=member.avatar_url)
+    embedvf.add_field(name=f'{member.name}', value=f'{member.name} Joined the server!', inline=False)
+    await welcome.send(embed=embedvf)
+
+
+@tasks.loop(seconds=5)
 async def change_status():
     await client.change_presence(activity=discord.Game(next(status)))
 
 
-@client.command()
-async def commandinfo(ctx):
-    await ctx.send(f'{ctx.author.mention} Here are the commands - '
-                   f'\n `!pingme` - Pings you'
-                   f'\n `!hello` - Says you hello'
-                   f'\n `!password` - Generates a unique password for you'
-                   f'\n `!ping` - Returns Pong'
-                   f'\n `!joke` - Returns you a joke'
-                   f"\n `!8ball` - You should enter a question after it, and it will tell it's chances of happening"
-                   f"\n `!memcount` - Total members in the server"
-                   f"\n `!invite` - creates a instant invite")
+@client.command(aliases=['help'])
+async def _help(ctx):
+    embedvar = discord.Embed(title="All the bot commands", description=None, color=0x00ff00)
+    embedvar.add_field(name="!ping", value="Tells the bot latency", inline=False)
+    embedvar.add_field(name="!pingme", value="Pings you back", inline=False)
+    embedvar.add_field(name="!hello", value="Returns Hello", inline=False)
+    embedvar.add_field(name="!password", value="Generates a unique password", inline=False)
+    embedvar.add_field(name="!8ball", value="Tell the chances of happening (write the question with it )", inline=False)
+    embedvar.add_field(name="!joke", value="Returns a joke", inline=False)
+    embedvar.add_field(name="!memcount", value="Returns the total members in the server", inline=False)
+    embedvar.add_field(name="!invite", value="Creates a invite", inline=False)
+    embedvar.add_field(name="!server", value="Returns information about the server", inline=False)
+    await ctx.send(embed=embedvar)
 
 
 @client.command()
@@ -141,6 +156,43 @@ async def memcount(ctx):
 async def invite(ctx):
     inv = str(await ctx.channel.create_invite(unique=False))
     await ctx.send(inv)
+
+
+@client.command()
+async def server(ctx):
+    roles = [role.name for role in ctx.guild.roles]
+    roles.remove('@everyone')
+    roles.remove('Python')  # My bot name is python
+    embedva = discord.Embed(title="Info About The Server", description=None, color=0x00FFFF)
+    embedva.add_field(name="Server Name", value=f"{ctx.guild}", inline=False)
+    embedva.add_field(name="Region", value=f"{ctx.guild.region}", inline=False)
+    embedva.add_field(name="Created", value=f"{ctx.guild.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
+                      inline=False)
+    embedva.add_field(name="Owner", value=f"{ctx.guild.owner}", inline=False)
+    embedva.add_field(name="Channels", value=f"There are {len(ctx.guild.channels)} channels", inline=False)
+    embedva.add_field(name="Text Channels", value=f"There are {len(ctx.guild.text_channels)} text-channels",
+                      inline=False)
+    embedva.add_field(name="Voice Channels", value=f"There are {len(ctx.guild.voice_channels)} voice-channels",
+                      inline=False)
+    embedva.add_field(name="Verification level", value=f"{ctx.guild.verification_level}", inline=False)
+    embedva.add_field(name="Total Roles", value=f"There are {len(ctx.guild.roles)} roles", inline=False)
+    embedva.add_field(name="Roles", value=f"{'  |  '.join(roles)}", inline=False)
+    embedva.add_field(name="Server ID", value=f"{ctx.guild.id}", inline=False)
+    await ctx.send(embed=embedva)
+
+
+@client.command(aliases=['user'])
+async def _user(ctx, member: discord.Member):
+    roles = [role.name for role in member.roles[1:]]
+    embedv = discord.Embed(title=f"Info About {member.name}", description=None, color=0x00FF00)
+    embedv.set_thumbnail(url=member.avatar_url)
+    embedv.add_field(name="Joined: ", value=f"{member.joined_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}", inline=False)
+    embedv.add_field(name="Created: ", value=f"{member.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
+                     inline=False)
+    embedv.add_field(name="Total Roles", value=f"{len(member.roles)}", inline=False)
+    embedv.add_field(name="Roles", value=f"{' | '.join(roles)}", inline=False)
+    embedv.add_field(name='ID', value=f"{member.id}", inline=False)
+    await ctx.send(embed=embedv)
 
 
 client.run('Your token')
