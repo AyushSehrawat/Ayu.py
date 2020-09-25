@@ -315,21 +315,6 @@ async def unrole(ctx, member: discord.Member, rolename: discord.Role):
 
     else:
         await ctx.send('Role not found or User has no such roles')
-
-
-@client.event
-async def on_message(message):
-
-    if message.content.startswith("prefix"):
-        
-        emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
-        emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
-        await message.channel.send(embed=emboo)
-
-    if message.content.startswith('Prefix'):
-        
-        emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
-        emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
-        await message.channel.send(embed=emboo)
+                     
 
 client.run('Your Token')
