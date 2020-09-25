@@ -288,7 +288,7 @@ async def spam(ctx, message='spam', *, val=5):
 
         for i in range(val):
             await ctx.send(f'{message}')
-            asyncio.sleep(0.2)
+            await asyncio.sleep(0.2)
         await ctx.send(f'{ctx.author.mention} Spamming done')
 
     elif val > 21 and ctx.channel == channel_only:
