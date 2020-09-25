@@ -30,7 +30,7 @@ async def on_ready():
     change_status.start()
     print('Bot is ready')
 
-    channel = client.get_channel(id=urchannelid here)     #To find channel id, do    \#channel_name
+    channel = client.get_channel(id=urchannelid here)
 
     await channel.send(f'Hi! I am `online!`')
 
@@ -263,7 +263,7 @@ async def _user(ctx, member: discord.Member):
 
 @client.command()
 async def spam(ctx, message='spam', *, val=5):
-    channel_only = client.get_channel(urchannelid here)
+    channel_only = client.get_channel(channelid here)
     val = int(val)
 
     if ctx.channel == channel_only and val < 21:
@@ -278,7 +278,7 @@ async def spam(ctx, message='spam', *, val=5):
 
     else:
         await ctx.send(f'{ctx.author.mention} You cannot use this command here!')
-        chan = client.get_channel(ur channelid here)
+        chan = client.get_channel(channelid here)
         await chan.send(f'{ctx.author.mention} Spam here')
 
 
@@ -317,10 +317,19 @@ async def unrole(ctx, member: discord.Member, rolename: discord.Role):
         await ctx.send('Role not found or User has no such roles')
 
 
-@client.command()
-async def prefix(ctx):
-    emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
-    emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
-    await ctx.send(embed=emboo)
+@client.event
+async def on_message(message):
+
+    if message.content.startswith("prefix"):
+        
+        emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
+        emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
+        await message.channel.send(embed=emboo)
+
+    if message.content.startswith('Prefix'):
+        
+        emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
+        emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
+        await message.channel.send(embed=emboo)
 
 client.run('Your Token')
