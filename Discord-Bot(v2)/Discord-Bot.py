@@ -16,35 +16,32 @@ import asyncio
 
 import datetime
 
-client = commands.Bot(command_prefix='!')
+client = commands.Bot(command_prefix='--')
 
 client.remove_command("help")
 
-status = cycle(['Try !help', 'Try !server', 'Try !help','Try !joke', 'Try !8ball', 'Try !password','Try !spam'])
-
+status = cycle(['Try --help', 'Try --server', 'Try --help', 'Try --joke', 'Try --8ball', 'Try --password', 'Try --spam'])
 
 unicode_list = ["\U0001f600", "\U0001f970", "\U0001f609", "\U0001f60a", "\U0001f971"]
 
 
 @client.event
 async def on_ready():
-
     change_status.start()
     print('Bot is ready')
 
-    channel = client.get_channel(id=channelid here)      #How to get channel id? --> \#channelname
+    channel = client.get_channel(id=urchannelid here)     #To find channel id, do    \#channel_name
 
     await channel.send(f'Hi! I am `online!`')
 
 
 @client.event
 async def on_member_join(member):
-
     rrole = discord.utils.get(member.guild.roles, name='Developers')
 
     await member.add_roles(rrole)
 
-    welcome = client.get_channel(id=channelid here)
+    welcome = client.get_channel(id=urchannelid here)
     embedvf = discord.Embed(title=f"Welcome to the Server", description=None, color=0xFF0000)
 
     embedvf.set_thumbnail(url=member.avatar_url)
@@ -55,44 +52,40 @@ async def on_member_join(member):
 
 @tasks.loop(seconds=5)
 async def change_status():
-
     await client.change_presence(activity=discord.Game(next(status)))
 
 
 @client.command(aliases=['help'])
 async def _help(ctx):
-
     embedvar = discord.Embed(title="All the bot commands", description=None, color=0x00ff00)
-    embedvar.add_field(name="!bot", value="Tells Info About Bot", inline=False)
+    embedvar.add_field(name="--bot", value="Tells Info About Bot", inline=False)
 
-    embedvar.add_field(name="!password", value="Generates a unique password", inline=False)
-    embedvar.add_field(name="!8ball <question>", value="Tell the chances of happening (write the question with it )",
+    embedvar.add_field(name="--password", value="Generates a unique password", inline=False)
+    embedvar.add_field(name="--8ball <question>", value="Tell the chances of happening (write the question with it )",
                        inline=False)
 
-    embedvar.add_field(name="!joke", value="Returns a joke", inline=False)
-    embedvar.add_field(name="!memcount", value="Returns the total members in the server", inline=False)
+    embedvar.add_field(name="--joke", value="Returns a joke", inline=False)
+    embedvar.add_field(name="--memcount", value="Returns the total members in the server", inline=False)
 
-    embedvar.add_field(name="!invite", value="Creates a invite", inline=False)
-    embedvar.add_field(name="!server", value="Returns information about the server", inline=False)
+    embedvar.add_field(name="--invite", value="Creates a invite", inline=False)
+    embedvar.add_field(name="--server", value="Returns information about the server", inline=False)
 
-    embedvar.add_field(name='!user <mention>', value="Tells info about a user mentioned with it", inline=False)
-    embedvar.add_field(name='!spam <message> <value>', value='Spams the message given', inline=False)
+    embedvar.add_field(name='--user <mention>', value="Tells info about a user mentioned with it", inline=False)
+    embedvar.add_field(name='--spam <message> <value>', value='Spams the message given', inline=False)
 
-    embedvar.add_field(name='!sourcecode', value='The code of this bot', inline=False)
-    embedvar.add_field(name='!pastebin', value='If you want to paste big codes, use this site!')
+    embedvar.add_field(name='--sourcecode', value='The code of this bot', inline=False)
+    embedvar.add_field(name='--pastebin', value='If you want to paste big codes, use this site!')
 
     await ctx.send(embed=embedvar)
 
 
 @client.command()
 async def pingme(ctx):
-
     await ctx.send(f'{ctx.author.mention}')
 
 
 @client.command(aliases=['hi'])
 async def hello(ctx):
-
     msg = await ctx.send(f'Hello {ctx.author.mention}')
 
     msg
@@ -102,7 +95,6 @@ async def hello(ctx):
 
 @client.command()
 async def password(ctx):
-
     passwor = discord_pass.secure_password_gen()
 
     await ctx.send(f'{ctx.author.mention} Check your dm for the password! ')
@@ -112,7 +104,6 @@ async def password(ctx):
 
 @client.command(aliases=['python', 'botinfo'])
 async def bot(ctx):
-
     values = psutil.virtual_memory()
     val2 = values.available * 0.001
     val3 = val2 * 0.001
@@ -168,7 +159,6 @@ async def _8ball(ctx, *, question):
 
 @client.command()
 async def joke(ctx):
-
     jokes = joke_api.get_joke()
     if not jokes:
         await ctx.channel.send("Couldn't get joke from API. Try again later.")
@@ -178,16 +168,14 @@ async def joke(ctx):
 
 
 @client.command()
-@commands.has_any_role('Owner', 'Moderators','Admins')
+@commands.has_any_role('Owner', 'Moderators', 'Admins')
 async def clear(ctx, amount=5):
-
     await ctx.channel.purge(limit=amount)
 
 
 @client.command()
 @commands.has_permissions(administrator=True)
 async def kick(ctx, member: discord.Member, *, reason=None):
-
     await member.kick(reason=reason)
 
     await ctx.send(f'Kicked {member.mention}')
@@ -196,16 +184,14 @@ async def kick(ctx, member: discord.Member, *, reason=None):
 @client.command()
 @commands.has_permissions(administrator=True)
 async def ban(ctx, member: discord.Member, *, reason=None):
-
     await member.ban(reason=reason)
 
     await ctx.send(f'Banned {member.mention}')
 
 
 @client.command()
-@commands.has_any_role('Owner', 'Moderators','Admins')
+@commands.has_any_role('Owner', 'Moderators', 'Admins')
 async def unban(ctx, *, member):
-
     banned_users = await ctx.guild.bans()
     member_name, member_discriminator = member.split('#')
 
@@ -220,20 +206,17 @@ async def unban(ctx, *, member):
 
 @client.command()
 async def memcount(ctx):
-
     await ctx.send(f'There are: {ctx.guild.member_count} members in the server')
 
 
 @client.command()
 async def invite(ctx):
-
     inv = str(await ctx.channel.create_invite(unique=False))
     await ctx.send(inv)
 
 
 @client.command(aliases=['info'])
 async def server(ctx):
-
     roles = [rrole.name for rrole in ctx.guild.roles]
     roles.remove('@everyone')
     roles.remove('Python')  # My bot name is python
@@ -270,7 +253,7 @@ async def _user(ctx, member: discord.Member):
     embedv.add_field(name="Created: ", value=f"{member.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
                      inline=False)
 
-    embedv.add_field(name="Total Roles", value=f"{len(member.roles) - 1}", inline=False)
+    embedv.add_field(name="Total Roles", value=f"{len(member.roles)-1}", inline=False)
     embedv.add_field(name="Roles", value=f"{' | '.join(roles)}", inline=False)
 
     embedv.add_field(name='ID', value=f"{member.id}", inline=False)
@@ -280,15 +263,14 @@ async def _user(ctx, member: discord.Member):
 
 @client.command()
 async def spam(ctx, message='spam', *, val=5):
-
-    channel_only = client.get_channel(urchannelid where it will spam)
+    channel_only = client.get_channel(urchannelid here)
     val = int(val)
 
     if ctx.channel == channel_only and val < 21:
 
         for i in range(val):
             await ctx.send(f'{message}')
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(0.05)
         await ctx.send(f'{ctx.author.mention} Spamming done')
 
     elif val > 21 and ctx.channel == channel_only:
@@ -296,13 +278,12 @@ async def spam(ctx, message='spam', *, val=5):
 
     else:
         await ctx.send(f'{ctx.author.mention} You cannot use this command here!')
-        chan = client.get_channel(urchannelid where it will spam)
+        chan = client.get_channel(ur channelid here)
         await chan.send(f'{ctx.author.mention} Spam here')
 
 
 @client.command()
 async def sourcecode(ctx):
-
     embevao = discord.Embed(title='Source Code', description='You now know info about my heart\nCheck your dm!')
     embevao.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
 
@@ -313,15 +294,12 @@ async def sourcecode(ctx):
 
 @client.command()
 async def pastebin(ctx):
-
     await ctx.send('https://pastebin.com/')
 
 
 @client.command()
-@commands.has_any_role('Owner','Admins')
-
+@commands.has_any_role('Owner', 'Admins')
 async def addrole(ctx, member: discord.Member, rolename: discord.Role):
-
     if rolename in ctx.guild.roles:
         await member.add_roles(rolename)
 
@@ -330,15 +308,19 @@ async def addrole(ctx, member: discord.Member, rolename: discord.Role):
 
 
 @client.command()
-@commands.has_any_role('Owner','Admins')
-
+@commands.has_any_role('Owner', 'Admins')
 async def unrole(ctx, member: discord.Member, rolename: discord.Role):
-
     if rolename in ctx.guild.roles:
         await member.remove_roles(rolename)
 
     else:
         await ctx.send('Role not found or User has no such roles')
 
+
+@client.command()
+async def prefix(ctx):
+    emboo = discord.Embed(title='Bot Prefix',description='Bot prefix is --',color=0xFFD700)
+    emboo.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
+    await ctx.send(embed=emboo)
 
 client.run('Your Token')
