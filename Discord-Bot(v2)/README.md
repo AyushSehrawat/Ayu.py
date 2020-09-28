@@ -9,4 +9,4 @@ This is the better version of my Discord-Bot script with some needed funcitons o
 
 
 
-`python -m pip install discord` `python -m pip install requests` `python -m pip install psutil` are the things needed. If using a venv, please install these 2 prerequesties there!
+`python -m pip install discord` `python -m pip install requests` `python -m pip install psutil` `python -m pip install json` are the things needed. If using a venv, please install these 2 prerequesties there!
