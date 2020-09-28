@@ -6,6 +6,8 @@ from discord.ext import commands, tasks
 
 from itertools import cycle
 
+import json
+
 import joke_api
 
 import psutil
@@ -20,9 +22,12 @@ client = commands.Bot(command_prefix='--')
 
 client.remove_command("help")
 
-status = cycle(['Try --help', 'Try --server', 'Try --help', 'Try --joke', 'Try --8ball', 'Try --password', 'Try --spam'])
+status = cycle(
+    ['Try --help', 'Try --server', 'Try --help', 'Try --joke', 'Try --8ball', 'Try --password', 'Try --spam'])
 
 unicode_list = ["\U0001f600", "\U0001f970", "\U0001f609", "\U0001f60a", "\U0001f971"]
+
+m = {}
 
 
 @client.event
@@ -30,18 +35,37 @@ async def on_ready():
     change_status.start()
     print('Bot is ready')
 
-    channel = client.get_channel(id=urchannelid here)
+    channel = client.get_channel(id=any channelid here)
 
     await channel.send(f'Hi! I am `online!`')
+
+    global m
+    with open('levelling.json', 'r') as j:
+        m = json.load(j)
+        j.close()
+    if len(m) == 0:
+        m = {}
+        for member in client.get_guild(your server idhere).members:
+            m[str(member.id)] = {"xp": 0, "messageCountdown": 0}
+
+    while True:
+        try:
+            for member in client.get_guild(your serverid).members:
+                m[str(member.id)]['messageCountdown'] -= 1
+        except:
+            pass
+        await asyncio.sleep(1)
 
 
 @client.event
 async def on_member_join(member):
+    m[str(member.id)] = {"xp": 0, "messageCountdown": 0}
+
     rrole = discord.utils.get(member.guild.roles, name='Developers')
 
     await member.add_roles(rrole)
 
-    welcome = client.get_channel(id=urchannelid here)
+    welcome = client.get_channel(id=anywelcomechannel)
     embedvf = discord.Embed(title=f"Welcome to the Server", description=None, color=0xFF0000)
 
     embedvf.set_thumbnail(url=member.avatar_url)
@@ -57,26 +81,70 @@ async def change_status():
 
 @client.command(aliases=['help'])
 async def _help(ctx):
-    embedvar = discord.Embed(title="All the bot commands", description=None, color=0x00ff00)
-    embedvar.add_field(name="--bot", value="Tells Info About Bot", inline=False)
+    embedvar = discord.Embed(title="Help Commands", description=None, color=0x00ff00)
 
-    embedvar.add_field(name="--password", value="Generates a unique password", inline=False)
+    embedvar.add_field(name='--info', value='Shows all comands to get info', inline=False)
+
+    embedvar.add_field(name='--gen', value='Shows all commands related to gen', inline=False)
+
+    embedvar.add_field(name='--extra', value='Shows some extra commands', inline=False)
+
+    embedvar.add_field(name='--fun', value='Shows all the fun commands!', inline=False)
+
+    await ctx.send(embed=embedvar)
+
+
+@client.command()
+async def fun(ctx):
+    embedvar = discord.Embed(title="All the fun commands", description=None, color=0x00ff00)
+
     embedvar.add_field(name="--8ball <question>", value="Tell the chances of happening (write the question with it )",
                        inline=False)
 
     embedvar.add_field(name="--joke", value="Returns a joke", inline=False)
-    embedvar.add_field(name="--memcount", value="Returns the total members in the server", inline=False)
 
-    embedvar.add_field(name="--invite", value="Creates a invite", inline=False)
-    embedvar.add_field(name="--server", value="Returns information about the server", inline=False)
-
-    embedvar.add_field(name='--user <mention>', value="Tells info about a user mentioned with it", inline=False)
     embedvar.add_field(name='--spam <message> <value>', value='Spams the message given', inline=False)
 
-    embedvar.add_field(name='--sourcecode', value='The code of this bot', inline=False)
-    embedvar.add_field(name='--pastebin', value='If you want to paste big codes, use this site!')
-
     await ctx.send(embed=embedvar)
+
+
+@client.command()
+async def gen(ctx):
+    emboo = discord.Embed(title='All the Generator Commands', description=None, color=0x00ff00)
+
+    emboo.add_field(name='--password <length>', value='Generated a password of given length', inline=False)
+
+    await ctx.send(embed=emboo)
+
+
+@client.command()
+async def info(ctx):
+    emblo = discord.Embed(title='All The Commands to Get Info', description=None, color=0x00ff00)
+
+    emblo.add_field(name='--bot', value='Tells the info about bot', inline=False)
+
+    emblo.add_field(name='--server', value='Tells the info about server', inline=False)
+
+    emblo.add_field(name='--user <mention>', value='Tells the info about that user', inline=False)
+
+    emblo.add_field(name='--memcount', value='Shows Total Members in the server', inline=False)
+
+    emblo.add_field(name='--xp', value='Tells Your Xp', inline=False)
+
+    await ctx.send(embed=emblo)
+
+
+@client.command()
+async def extra(ctx):
+    emboo = discord.Embed(title='Extra Commands', description=None, color=0x00ff00)
+
+    emboo.add_field(name="--invite", value="Creates a invite", inline=False)
+
+    emboo.add_field(name='--sourcecode', value='The code of this bot', inline=False)
+
+    emboo.add_field(name='--pastebin', value='If you want to paste big codes, use this site!', inline=False)
+
+    await ctx.send(embed=emboo)
 
 
 @client.command()
@@ -94,12 +162,14 @@ async def hello(ctx):
 
 
 @client.command()
-async def password(ctx):
-    passwor = discord_pass.secure_password_gen()
-
-    await ctx.send(f'{ctx.author.mention} Check your dm for the password! ')
-
-    await ctx.author.send(f'You password is \n `{passwor}`')
+async def password(ctx, passlength):
+    passlength = int(passlength)
+    if passlength > 51:
+        await ctx.send(f'{ctx.author.mention} Your password cannot be so long!')
+    elif passlength < 51:
+        passwor = discord_pass.secure_password_gen(passlength)
+        await ctx.send(f'{ctx.author.mention} Check your dm for the password! ')
+        await ctx.author.send(f'You password is \n `{passwor}`')
 
 
 @client.command(aliases=['python', 'botinfo'])
@@ -215,30 +285,40 @@ async def invite(ctx):
     await ctx.send(inv)
 
 
-@client.command(aliases=['info'])
+@client.command()
 async def server(ctx):
     roles = [rrole.name for rrole in ctx.guild.roles]
+
     roles.remove('@everyone')
+
     roles.remove('Python')  # My bot name is python
 
     embedva = discord.Embed(title="Info About The Server", description=None, color=0x00FFFF)
+
     embedva.set_thumbnail(url=ctx.guild.icon_url)
+
     embedva.add_field(name="Server Name", value=f"{ctx.guild}", inline=False)
+
     embedva.add_field(name="Region", value=f"{ctx.guild.region}", inline=False)
+
     embedva.add_field(name="Created", value=f"{ctx.guild.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
                       inline=False)
 
     embedva.add_field(name="Owner", value=f"{ctx.guild.owner}", inline=False)
-    embedva.add_field(name="Channels", value=f"There are {len(ctx.guild.channels[1:])} channels", inline=False)
+
+    embedva.add_field(name="Channels", value=f"There are {len(ctx.guild.channels)} channels", inline=False)
+
     embedva.add_field(name="Text Channels", value=f"There are {len(ctx.guild.text_channels)} text-channels",
                       inline=False)
 
     embedva.add_field(name="Voice Channels", value=f"There are {len(ctx.guild.voice_channels)} voice-channels",
                       inline=False)
     embedva.add_field(name="Verification level", value=f"{ctx.guild.verification_level}", inline=False)
+
     embedva.add_field(name="Total Roles", value=f"There are {len(ctx.guild.roles)} roles", inline=False)
 
     embedva.add_field(name="Roles", value=f"{'  |  '.join(roles)}", inline=False)
+
     embedva.add_field(name="Server ID", value=f"{ctx.guild.id}", inline=False)
 
     await ctx.send(embed=embedva)
@@ -247,13 +327,18 @@ async def server(ctx):
 @client.command(aliases=['user'])
 async def _user(ctx, member: discord.Member):
     roles = [rrole.name for rrole in member.roles[1:]]
+
     embedv = discord.Embed(title=f"Info About {member.name}", description=None, color=0x00FF00)
+
     embedv.set_thumbnail(url=member.avatar_url)
+
     embedv.add_field(name="Joined: ", value=f"{member.joined_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}", inline=False)
+
     embedv.add_field(name="Created: ", value=f"{member.created_at.strftime('%A, %B %d %Y @ %H:%M:%S %p')}",
                      inline=False)
 
-    embedv.add_field(name="Total Roles", value=f"{len(member.roles)-1}", inline=False)
+    embedv.add_field(name="Total Roles", value=f"{len(member.roles) - 1}", inline=False)
+
     embedv.add_field(name="Roles", value=f"{' | '.join(roles)}", inline=False)
 
     embedv.add_field(name='ID', value=f"{member.id}", inline=False)
@@ -263,28 +348,32 @@ async def _user(ctx, member: discord.Member):
 
 @client.command()
 async def spam(ctx, message='spam', *, val=5):
-    channel_only = client.get_channel(channelid here)
+    channel_only = client.get_channel(spam channelid)
     val = int(val)
 
     if ctx.channel == channel_only and val < 21:
 
         for i in range(val):
             await ctx.send(f'{message}')
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.2)
+
         await ctx.send(f'{ctx.author.mention} Spamming done')
 
     elif val > 21 and ctx.channel == channel_only:
+
         await ctx.send('You Cannot Spam More Than 20 Times')
 
     else:
+
         await ctx.send(f'{ctx.author.mention} You cannot use this command here!')
-        chan = client.get_channel(channelid here)
+        chan = client.get_channel(create a spam channel, and get the id)
         await chan.send(f'{ctx.author.mention} Spam here')
 
 
 @client.command()
 async def sourcecode(ctx):
     embevao = discord.Embed(title='Source Code', description='You now know info about my heart\nCheck your dm!')
+
     embevao.set_thumbnail(url='https://files.realpython.com/media/python-logo.8eb72ea6927b.png')
 
     await ctx.author.send('https://github.com/AyushSehrawat/Python-3-Files/tree/master/Discord-Bot(v2)')
@@ -311,10 +400,51 @@ async def addrole(ctx, member: discord.Member, rolename: discord.Role):
 @commands.has_any_role('Owner', 'Admins')
 async def unrole(ctx, member: discord.Member, rolename: discord.Role):
     if rolename in ctx.guild.roles:
+
         await member.remove_roles(rolename)
 
     else:
         await ctx.send('Role not found or User has no such roles')
-                     
+
+
+@client.command()
+async def xp(ctx):
+    embla = discord.Embed(title=f'{ctx.author.name} Xp'
+                          , description=None, color=0x2BFE72)
+    embla.set_thumbnail(url=ctx.author.avatar_url)
+    embla.add_field(name='Your XP is', value=m[str(ctx.author.id)]['xp'])
+    await ctx.channel.send(embed=embla)
+
+
+@client.event
+async def on_message(message):
+    if message.content.startswith('prefix'):
+        emlo = discord.Embed(title='Bot Prefix', description='Bot Prefix is --', color=0x2BFE72)
+        await message.channel.send(embed=emlo)
+
+    await client.process_commands(message)
+
+
+@client.event
+async def on_message(message):
+    global m
+
+    if message.content == '--stop' and message.author.id == youridhere:
+
+        with open('levelling.json', 'w') as j:
+            j.write(json.dumps(m))
+            j.close()
+
+        await client.close()
+
+    elif message.author != client.user:
+        if m[str(message.author.id)]['messageCountdown'] <= 0:
+            m[str(message.author.id)]['xp'] += 10
+
+            m[str(message.author.id)]['messageCountdown'] = 10
+
+    await client.process_commands(message)
+
 
 client.run('Your Token')
+# The End
