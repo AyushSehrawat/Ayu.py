@@ -1,4 +1,4 @@
-import youtube_dl
+
 import subprocess
 import sys
 
@@ -13,6 +13,7 @@ print('\n*****************************************************\n'
       '                    Check Complete                   \n')
 
 
+import youtube_dl
 
 ydl_opts = {} 
 
