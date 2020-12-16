@@ -107,11 +107,10 @@ def _hcf(x, y):
 def __gcd(a,b) : 
     if (a < b) : 
         return __gcd(b, a) 
-      
+  
     if (abs(b) < 0.001) : 
         return a 
-    else : 
-        return (__gcd(b, a - math.floor(a / b) * b))
+    return (__gcd(b, a - math.floor(a / b) * b))
 
 
 def length_vector():
