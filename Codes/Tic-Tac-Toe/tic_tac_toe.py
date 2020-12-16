@@ -37,10 +37,8 @@ def player_input():
         if marker == 'X':
             #
             return 'X', 'O'
-
-        else:
-            #
-            return 'O', 'X'
+        #
+        return 'O', 'X'
 
 
 def place_marker(board, marker, posi):
@@ -61,8 +59,7 @@ def win_check(board, mark):
 def choose_first():
     if random.randint(0, 1) == 0:
         return 'Player 2'
-    else:
-        return 'Player 1'
+    return 'Player 1'
 
 
 def space_check(board, posi):
@@ -90,10 +87,9 @@ def wannaplayagain():
         wannaplay = input('Would You Like To Play Again,(Y)es or (N)o: ').upper()
         if wannaplay == 'Y':
             return True
-        elif wannaplay == 'N':
+        if wannaplay == 'N':
             return False
-        else:
-            print('Wrong Input!')
+        print('Wrong Input!')
 
 
 print("Let's get started!")
