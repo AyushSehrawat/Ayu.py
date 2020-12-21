@@ -3,12 +3,35 @@ import random
 import time
 # Imported time to make our code look a little good
 
-print('Welcome to Rock,Paper,Scissor game')
+print('Welcome to Rock,Paper,Scissor Game')
 
-name = input('Your name: ')
-print(f'Welcome {name}')
-turns = int(input('How many turns do you want?\n>>>'))
-print(f'{name} choose {turns} turns')
+nam = input('Your name: ')
+name = nam.capitalize()
+while len(name)<1:
+  print("Please put a Valid Name!")
+  name = input('Your name: ')
+else:
+  print(f'Welcome {name.capitalize()}')
+
+
+while True:
+    try:
+        turn = (input("How many turns do you want?\n>>>"))
+        n = int(turn)
+        break
+    except ValueError:
+        print("No valid integer! Please try again ...")
+
+
+turns = int(turn)
+
+while turns<1:
+  print("Please put a Valid Number of Turns!")
+  turns = int(input('How many turns do you want?\n>>>'))
+else:
+  print(f'{name.capitalize()} choose {turns} turns')
+
+
 
 options = ['r', 'p', 's']
 
@@ -39,7 +62,7 @@ for num in range(turns):
         c_marks.append(computer)
         total.append(computer)
 
-    elif choice == 'r':
+    elif choice == 'r' or choice == 'rock':
 
         if computer == 's':
             print('Computer choosing...')
@@ -55,7 +78,7 @@ for num in range(turns):
             total.append(computer)
             c_marks.append(computer)
 
-    elif choice == 'p':
+    elif choice == 'p' or choice == 'paper':
 
         if computer == 'r':
             print('Computer choosing...')
@@ -71,7 +94,7 @@ for num in range(turns):
             total.append(computer)
             c_marks.append(computer)
 
-    elif choice == 's':
+    elif choice == 's' or choice == 'scissor':
 
         if computer == 'p':
             print('Computer choosing...')
